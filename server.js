@@ -14,11 +14,6 @@ const db = knex({
     }
   });
 
-db.select('*').from('users')
-  .then( data => {
-      console.log(data);
-  })
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -61,49 +56,52 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
 
-    const { email, name, password} = req.body;
+ const { email, name, password} = req.body;
 
-  db('users').insert({ 
-    email: email,
-    name: name,
-    joined: new Date()
- }).then(console.log)
-
-    res.json(database.users[database.users.length -1]); 
+  db('users')
+  .returning('*')
+    .insert({ 
+        email: email,
+        name: name,
+        joined: new Date()
+    })
+    .then( user => {
+        res.json(user[0]); 
+    })
+    .catch( err => res.status(400).json('User already exist'))
+    
 });
 
 
 
 app.get('/profile/:id', (req, res) => {
     const { id } = req.params;
-    let found = false;
 
-    database.users.forEach ( user => {
-        if (user.id === id) {
-            found = true;
-            return res.json(user);
-        } 
-    });
-    if(!found) {
-            res.status(404).json('no such user');
-    }
+    db.select('*').from('users').where({
+        id: id
+    }).then( user => {
+        if( user.length){
+            res.json(user[0])
+        } else {
+            res.status(400).json('Not found!')
+        }
+        
+    })
+    .catch( err => res.status(400).json('error getting user'))
 
 })
 
 app.put('/image', (req, res) => {
     const { id } = req.body;
     let found = false;
+    db('users').where('id', '=', id)
+        .increment('entries', 1)
+        .returning('entries')
+        .then ( entries => {
+            res.json(entries[0]);
+        })
+        .catch( err => res.status(400).json('Unable to get entries'))
 
-    database.users.forEach ( user => {
-        if (user.id === id) {
-            found = true;
-            user.entries++;
-            return res.json(user.entries);
-        } 
-    });
-    if(!found) {
-            res.status(404).json('no such user');
-    }
 })
 
 app.listen(3000, () => {
