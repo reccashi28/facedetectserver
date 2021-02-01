@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "start:dev": "nodemon --watch"
+    "start:dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
