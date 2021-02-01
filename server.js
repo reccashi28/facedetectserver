@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 //send get request to the server
 app.get('/', (req, res) => {
-    res.send(db.users);
+    res.send('success');
 })
 
 //signin
