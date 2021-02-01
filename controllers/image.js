@@ -1,10 +1,12 @@
 const Clarifai = require('clarifai');
+
 const app = new Clarifai.App( {
     apiKey: '05801666535849c18dcb0813448cb880'
   });
-const handleAPICall = (req, res ) => {
+const handleApiCall = (req, res ) => {
     app.models
-    .predict( 'c0c0ac362b03416da06ab3fa36fb58e3', req.body.input)
+    // .predict( 'c0c0ac362b03416da06ab3fa36fb58e3', req.body.input)
+    .predict( Clarifai.FACE_DETECT_MODEL, req.body.input)
     .then( data => {
         res.json(data)
     })
@@ -14,7 +16,6 @@ const handleAPICall = (req, res ) => {
 
 const handleImage = (req, res, db) => {
     const { id } = req.body;
-    let found = false;
     db('users').where('id', '=', id)
         .increment('entries', 1)
         .returning('entries')
@@ -26,5 +27,6 @@ const handleImage = (req, res, db) => {
 }
 
 module.exports = {
-    handleImage
+    handleImage,
+    handleApiCall
 }
