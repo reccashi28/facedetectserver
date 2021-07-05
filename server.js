@@ -14,12 +14,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 const db = knex({
     client: 'pg',
     connection: {
-      connectString: process.env.DATABASE_URL,
-      ssl: true
-      // host : 'postgresql-shaped-78131',
-      // user : 'wilhelmmeyer',
-      // password : 'Celica18ts',
-      // database : 'smart-brain'
+      host : 'postgresql-shaped-78131',
+      user : 'wilhelmmeyer',
+      password : 'Celica18ts',
+      database : 'smart-brain'
     }
   });
 
